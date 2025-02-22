@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -19,8 +18,7 @@ import net.rebaat.mutaabid.presentation.state.WirdState
 
 class WirdViewModel(
     private val getAllWirdOfDayUseCase: GetWirdItmamsOfDayUseCase,
-    private val upsertItmamUseCase: UpsertItmamUseCase,
-    private val savedStateHandle: SavedStateHandle
+    private val upsertItmamUseCase: UpsertItmamUseCase
 ): ViewModel() {
     var state by mutableStateOf(WirdState())
         private set
@@ -34,7 +32,6 @@ class WirdViewModel(
         when(action) {
             is WirdItmamAction.ToggleItmamWird -> toggleItmam(action.wirdItmam)
             is WirdItmamAction.SelectDate -> selectDate(action.selectedDate)
-            else -> Unit
         }
     }
 

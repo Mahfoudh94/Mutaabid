@@ -23,9 +23,9 @@ fun provideDatabase(application: Application): AppDatabase {
     return Room.databaseBuilder(
         context = application, name = "database", klass = AppDatabase::class.java
     ).fallbackToDestructiveMigration().setQueryCallback(
-            RoomDatabase.QueryCallback { sqlQuery, bindArgs ->
-                Log.d("DB", "SQL Query: $sqlQuery SQL Args: $bindArgs")
-            }, executor = Executors.newSingleThreadExecutor()
+        { sqlQuery, bindArgs ->
+            Log.d("DB", "SQL Query: $sqlQuery SQL Args: $bindArgs")
+        }, executor = Executors.newSingleThreadExecutor()
         ).addCallback(object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
