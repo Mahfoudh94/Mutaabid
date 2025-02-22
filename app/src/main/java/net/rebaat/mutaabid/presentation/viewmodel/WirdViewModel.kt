@@ -1,12 +1,13 @@
 package net.rebaat.mutaabid.presentation.viewmodel
 
-import android.os.Build
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import net.rebaat.mutaabid.data.model.Itmam
@@ -40,7 +41,7 @@ class WirdViewModel(
     private fun getAllWirdItmams(selectedDate: LocalDate? = null) {
         viewModelScope.launch {
             state = state.copy(
-                wirdItmams = getAllWirdOfDayUseCase(selectedDate),
+                wirdItmams = getAllWirdOfDayUseCase(selectedDate).stateIn(viewModelScope).value,
                 isLoading = false
             )
         }

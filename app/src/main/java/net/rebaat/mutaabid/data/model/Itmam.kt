@@ -20,7 +20,7 @@ data class Itmam(
     @ColumnInfo(name = "itmamId")
     val id: Int? = null,
 
-    val wirdId: Int,
+    val wirdId: Int?,
 
     val date: LocalDate,
     val done: Boolean

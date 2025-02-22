@@ -1,5 +1,6 @@
 package net.rebaat.mutaabid.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -11,11 +12,11 @@ import net.rebaat.mutaabid.data.model.WirdItmam
 import java.util.Date
 
 class WirdRepositoryImpl(private val wirdDao: WirdDao): WirdRepository {
-    override suspend fun getAllWirds(): List<Wird> {
+    override suspend fun getAllWirds(): Flow<List<Wird>> {
         return wirdDao.getAll()
     }
 
-    override suspend fun getAllWirdsOfDay(date: LocalDate?): List<WirdItmam> {
+    override suspend fun getAllWirdsOfDay(date: LocalDate?): Flow<List<WirdItmam>> {
         return wirdDao.getWirdItmams(
             date ?: Clock.System.todayIn(TimeZone.currentSystemDefault())
         )
