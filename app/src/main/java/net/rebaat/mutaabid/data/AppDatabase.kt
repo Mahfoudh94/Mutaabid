@@ -27,11 +27,12 @@ class DateConverter {
 
 @Database(
     entities = [Wird::class, Itmam::class],
-    version = 2
+    version = 3
 )
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun getWirdDao(): WirdDao
     abstract fun getItmamDao(): ItmamDao
+
 //    abstract fun getWirdItmamDao(): WirdItmamDao
 }

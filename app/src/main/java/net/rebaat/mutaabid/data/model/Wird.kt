@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Wird(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int? = null,
 
     val name: String = "",
     val isAvailable: Boolean? = true,
