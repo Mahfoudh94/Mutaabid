@@ -15,5 +15,5 @@ interface ItmamDao {
     suspend fun delete(itmam: Itmam)
 
     @Query("SELECT * FROM itmam ORDER BY date DESC")
-    fun getAll(): List<Itmam>
+    suspend fun getAll(): List<Itmam>
 }

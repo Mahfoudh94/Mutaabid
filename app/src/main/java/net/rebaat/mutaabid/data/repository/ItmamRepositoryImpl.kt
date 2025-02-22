@@ -4,7 +4,7 @@ import net.rebaat.mutaabid.data.dao.ItmamDao
 import net.rebaat.mutaabid.data.model.Itmam
 
 class ItmamRepositoryImpl(private val itmamDao: ItmamDao): ItmamRepository {
-    override fun getAllItmams(): List<Itmam> {
+    override suspend fun getAllItmams(): List<Itmam> {
         return itmamDao.getAll()
     }
     override suspend fun upsertItmam(itmam: Itmam): Boolean {

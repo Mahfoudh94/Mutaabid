@@ -1,13 +1,14 @@
 package net.rebaat.mutaabid.domain.usecase
 
+import kotlinx.datetime.LocalDate
+import net.rebaat.mutaabid.data.model.Wird
 import net.rebaat.mutaabid.data.model.WirdItmam
-import net.rebaat.mutaabid.data.repository.WirdItmamRepository
-import java.util.Date
+import net.rebaat.mutaabid.data.repository.WirdRepository
 
 class GetWirdItmamsOfDayUseCase(
-    private val wirdItmamRepository: WirdItmamRepository
+    private val wirdRepository: WirdRepository
 ) {
-    operator fun invoke(date: Date): List<WirdItmam> {
-        return wirdItmamRepository.getWirdItmams(date)
+    suspend operator fun invoke(date: LocalDate?): List<WirdItmam> {
+        return wirdRepository.getAllWirdsOfDay(date)
     }
 }

@@ -1,39 +1,73 @@
 package net.rebaat.mutaabid.presentation.viewmodel
 
-import androidx.compose.runtime.MutableState
+import android.os.Build
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import net.rebaat.mutaabid.data.model.Wird
-import net.rebaat.mutaabid.domain.usecase.GetAllWirdsUseCase
-import net.rebaat.mutaabid.domain.usecase.InsertWirdUseCase
+import kotlinx.datetime.LocalDate
+import net.rebaat.mutaabid.data.model.Itmam
+import net.rebaat.mutaabid.data.model.WirdItmam
+import net.rebaat.mutaabid.domain.usecase.GetWirdItmamsOfDayUseCase
+import net.rebaat.mutaabid.domain.usecase.UpsertItmamUseCase
+import net.rebaat.mutaabid.presentation.action.WirdItmamAction
 import net.rebaat.mutaabid.presentation.state.WirdState
 
 class WirdViewModel(
-    private val getAllWirdsUseCase: GetAllWirdsUseCase,
-    private val insertWirdUseCase: InsertWirdUseCase,
+    private val getAllWirdOfDayUseCase: GetWirdItmamsOfDayUseCase,
+    private val upsertItmamUseCase: UpsertItmamUseCase,
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val _wirdState = MutableStateFlow(WirdState())
-
-    val wirdState: StateFlow<WirdState> = _wirdState.asStateFlow()
+    var state by mutableStateOf(WirdState())
+        private set
 
     init {
-        getAllWirds()
+        state = state.copy(isLoading = true)
+        getAllWirdItmams()
     }
 
-    fun getAllWirds() {
+    fun onAction(action: WirdItmamAction) {
+        when(action) {
+            is WirdItmamAction.ToggleItmamWird -> toggleItmam(action.wirdItmam)
+            is WirdItmamAction.SelectDate -> selectDate(action.selectedDate)
+            else -> Unit
+        }
+    }
+
+    private fun getAllWirdItmams(selectedDate: LocalDate? = null) {
         viewModelScope.launch {
-            _wirdState.value = _wirdState.value.copy(
-                isLoading = true
-            )
-            _wirdState.value = _wirdState.value.copy(
-                wirds = getAllWirdsUseCase.invoke(),
+            state = state.copy(
+                wirdItmams = getAllWirdOfDayUseCase(selectedDate),
                 isLoading = false
             )
         }
     }
-    suspend fun insertWird(wird: Wird) = insertWirdUseCase.invoke(wird)
+
+    private fun toggleItmam(wirdItmam: WirdItmam) {
+        val itmam = if (wirdItmam.itmam == null)
+            Itmam(
+                wirdId = wirdItmam.wird.id,
+                date = state.selectedDate,
+                done = true,
+            )
+        else
+            wirdItmam.itmam.copy(
+                done = !wirdItmam.itmam.done,
+            )
+        viewModelScope.launch{
+            upsertItmamUseCase(itmam)
+            getAllWirdItmams()
+        }
+    }
+
+    private fun selectDate(selectedDate: LocalDate) {
+        state = state.copy(
+            selectedDate = selectedDate,
+            isLoading = true
+        )
+        getAllWirdItmams(selectedDate)
+    }
 }

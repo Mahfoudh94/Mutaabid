@@ -8,12 +8,14 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
 composeBom = "2024.04.01"
-koin = "3.6.0-Beta4"
+koin = "4.0.0"
 koin-compose = "1.2.0-Beta4"
 ksp = "2.0.21-1.0.27"
 room = "2.6.1"
+datetime = "0.6.2"
 
 [libraries]
+kotinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room"}

@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.kotinx.datetime)
     ksp(libs.room.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

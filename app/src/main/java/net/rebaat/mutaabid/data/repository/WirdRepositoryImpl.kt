@@ -1,11 +1,25 @@
 package net.rebaat.mutaabid.data.repository
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.todayIn
 import net.rebaat.mutaabid.data.dao.WirdDao
 import net.rebaat.mutaabid.data.model.Wird
+import net.rebaat.mutaabid.data.model.WirdItmam
+import java.util.Date
 
 class WirdRepositoryImpl(private val wirdDao: WirdDao): WirdRepository {
-    override fun getAllWirds(): List<Wird> {
+    override suspend fun getAllWirds(): List<Wird> {
         return wirdDao.getAll()
+    }
+
+    override suspend fun getAllWirdsOfDay(date: LocalDate?): List<WirdItmam> {
+        return wirdDao.getWirdItmams(
+            date ?: Clock.System.todayIn(TimeZone.currentSystemDefault())
+        )
+
     }
 
     override suspend fun upsertWird(wird: Wird): Boolean {
