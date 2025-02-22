@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import net.rebaat.mutaabid.data.model.Itmam
@@ -18,7 +18,7 @@ import net.rebaat.mutaabid.presentation.state.WirdState
 class WirdViewModel(
     private val getAllWirdOfDayUseCase: GetWirdItmamsOfDayUseCase,
     private val upsertItmamUseCase: UpsertItmamUseCase
-): ViewModel() {
+) : ViewModel() {
     var state by mutableStateOf(WirdState())
         private set
 
@@ -28,7 +28,7 @@ class WirdViewModel(
     }
 
     fun onAction(action: WirdItmamAction) {
-        when(action) {
+        when (action) {
             is WirdItmamAction.ToggleItmamWird -> toggleItmam(action.wirdItmam)
             is WirdItmamAction.SelectDate -> selectDate(action.selectedDate)
         }
@@ -37,9 +37,18 @@ class WirdViewModel(
     private fun getAllWirdItmams(selectedDate: LocalDate? = null) {
         viewModelScope.launch {
             state = state.copy(
-                wirdItmams = getAllWirdOfDayUseCase(selectedDate).stateIn(viewModelScope).value,
-                isLoading = false
+                isLoading = true
             )
+            getAllWirdOfDayUseCase(selectedDate).catch {
+                state = state.copy(
+                    isLoading = false,
+                )
+            }.collect { new_wirdItmams ->
+                state = state.copy(
+                    wirdItmams = new_wirdItmams,
+                    isLoading = false,
+                )
+            }
         }
     }
 
@@ -54,9 +63,8 @@ class WirdViewModel(
             wirdItmam.itmam.copy(
                 done = !wirdItmam.itmam.done,
             )
-        viewModelScope.launch{
+        viewModelScope.launch {
             upsertItmamUseCase(itmam)
-            getAllWirdItmams()
         }
     }
 
@@ -65,6 +73,5 @@ class WirdViewModel(
             selectedDate = selectedDate,
             isLoading = true
         )
-        getAllWirdItmams(selectedDate)
     }
 }

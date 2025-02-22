@@ -10,11 +10,11 @@ import net.rebaat.mutaabid.data.model.Wird
 import net.rebaat.mutaabid.data.model.WirdItmam
 
 class WirdRepositoryImpl(private val wirdDao: WirdDao): WirdRepository {
-    override suspend fun getAllWirds(): Flow<List<Wird>> {
+    override fun getAllWirds(): Flow<List<Wird>> {
         return wirdDao.getAll()
     }
 
-    override suspend fun getAllWirdsOfDay(date: LocalDate?): Flow<List<WirdItmam>> {
+    override fun getAllWirdsOfDay(date: LocalDate?): Flow<List<WirdItmam>> {
         return wirdDao.getWirdItmams(
             date ?: Clock.System.todayIn(TimeZone.currentSystemDefault())
         )

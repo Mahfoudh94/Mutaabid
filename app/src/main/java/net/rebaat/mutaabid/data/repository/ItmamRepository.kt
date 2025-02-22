@@ -1,8 +1,9 @@
 package net.rebaat.mutaabid.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import net.rebaat.mutaabid.data.model.Itmam
 
 interface ItmamRepository {
-    suspend fun getAllItmams(): List<Itmam>
+    fun getAllItmams(): Flow<List<Itmam>>
     suspend fun upsertItmam(itmam: Itmam): Boolean
 }

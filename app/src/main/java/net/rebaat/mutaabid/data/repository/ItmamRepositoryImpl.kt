@@ -1,10 +1,11 @@
 package net.rebaat.mutaabid.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import net.rebaat.mutaabid.data.dao.ItmamDao
 import net.rebaat.mutaabid.data.model.Itmam
 
 class ItmamRepositoryImpl(private val itmamDao: ItmamDao): ItmamRepository {
-    override suspend fun getAllItmams(): List<Itmam> {
+    override fun getAllItmams(): Flow<List<Itmam>> {
         return itmamDao.getAll()
     }
     override suspend fun upsertItmam(itmam: Itmam): Boolean {
