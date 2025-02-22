@@ -8,7 +8,7 @@ import net.rebaat.mutaabid.data.repository.WirdRepository
 class GetWirdItmamsOfDayUseCase(
     private val wirdRepository: WirdRepository
 ) {
-    suspend operator fun invoke(date: LocalDate?): Flow<List<WirdItmam>> {
+    operator fun invoke(date: LocalDate?): Flow<List<WirdItmam>> {
         return wirdRepository.getAllWirdsOfDay(date)
     }
 }

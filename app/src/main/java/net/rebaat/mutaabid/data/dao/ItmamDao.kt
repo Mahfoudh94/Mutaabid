@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
 import net.rebaat.mutaabid.data.model.Itmam
 
 @Dao
@@ -15,5 +16,5 @@ interface ItmamDao {
     suspend fun delete(itmam: Itmam)
 
     @Query("SELECT * FROM itmam ORDER BY date DESC")
-    suspend fun getAll(): List<Itmam>
+    fun getAll(): Flow<List<Itmam>>
 }
