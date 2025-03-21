@@ -74,6 +74,12 @@ fun MainScreen(
 
         DayTabs(islamicDate, wirdViewModel::onAction)
 
+        if (wirdItmams.isEmpty())
+            Text(
+                _t("StarterMessage") ?: "Select a day",
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(1.2f),
+            )
+
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
