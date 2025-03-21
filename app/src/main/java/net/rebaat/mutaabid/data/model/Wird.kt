@@ -8,5 +8,6 @@ data class Wird(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
 
     val name: String = "",
-    val isAvailable: Boolean? = true,
+    var isAvailable: Boolean? = true,
+    val icon: Int? = null,
 )

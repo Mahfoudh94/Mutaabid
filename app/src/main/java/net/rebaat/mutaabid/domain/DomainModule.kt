@@ -24,6 +24,12 @@ fun provideWirdItmamOfDayUseCase(
     return GetWirdItmamsOfDayUseCase(wirdRepository)
 }
 
+fun provideToggleWirdVisibilityUseCase(
+    wirdRepository: WirdRepository
+): ToggleWirdVisibilityUseCase {
+    return ToggleWirdVisibilityUseCase(wirdRepository)
+}
+
 val domainModule =  module {
     single { provideGetAllWirdsUseCase(get()) }
     single { provideInsertWirdUseCase(get()) }
