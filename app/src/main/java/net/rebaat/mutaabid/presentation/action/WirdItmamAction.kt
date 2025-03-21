@@ -7,5 +7,5 @@ import net.rebaat.mutaabid.data.model.WirdItmam
 sealed interface WirdItmamAction {
     data class ToggleWirdVisibility(val wird: Wird, val visibility: Boolean? = null) : WirdItmamAction
     data class ToggleItmamWird(val wirdItmam: WirdItmam) : WirdItmamAction
-    data class SelectDate(val selectedDate: LocalDate) : WirdItmamAction
+    data class SelectDate(val selectedDate: IslamicCalendar) : WirdItmamAction
 }

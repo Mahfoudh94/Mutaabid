@@ -15,7 +15,7 @@ private val DarkColorScheme = darkColorScheme(
     primary = Primary,
     secondary = Green40,
     tertiary = Green20,
-    background = Color(0xFF022B18)
+    background = Color(0xFF011C10)
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -39,7 +39,7 @@ private val LightColorScheme = lightColorScheme(
 fun MutaabidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

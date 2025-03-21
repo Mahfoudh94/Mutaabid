@@ -16,16 +16,14 @@ import org.koin.android.ext.android.inject
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val wirdViewModel: WirdViewModel by inject()
         enableEdgeToEdge()
         setContent {
-            MutaabidTheme {
+            MutaabidTheme(darkTheme = false) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                 ) { innerPadding ->
                     MainScreen(
                         modifier = Modifier.padding(innerPadding),
-                        wirdViewModel = wirdViewModel
                     )
                 }
             }

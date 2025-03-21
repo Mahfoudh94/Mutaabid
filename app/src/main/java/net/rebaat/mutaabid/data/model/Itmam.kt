@@ -1,5 +1,6 @@
 package net.rebaat.mutaabid.data.model
 
+import android.icu.util.IslamicCalendar
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -22,6 +23,6 @@ data class Itmam(
 
     val wirdId: Int?,
 
-    val date: LocalDate,
+    val date: IslamicCalendar,
     val done: Boolean
 )

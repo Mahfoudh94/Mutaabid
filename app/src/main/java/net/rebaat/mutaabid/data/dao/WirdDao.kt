@@ -1,10 +1,12 @@
 package net.rebaat.mutaabid.data.dao
 
+import android.icu.util.IslamicCalendar
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
@@ -31,5 +33,5 @@ interface WirdDao {
             " itmam.date as itmam_date," +
             " itmam.done as itmam_done FROM wird" +
             " LEFT JOIN itmam ON wird.id = itmam.wirdId AND itmam.date = :date")
-    fun getWirdItmams(date: LocalDate): Flow<List<WirdItmam>>
+    fun getWirdItmams(date: IslamicCalendar): Flow<List<WirdItmam>>
 }

@@ -1,109 +1,95 @@
 package net.rebaat.mutaabid.presentation.view
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
-import kotlinx.datetime.todayIn
-import net.rebaat.mutaabid.presentation.action.WirdItmamAction
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Plus
+import net.rebaat.mutaabid._t
+import net.rebaat.mutaabid.presentation.component.DayTabs
+import net.rebaat.mutaabid.presentation.component.WirdCard
 import net.rebaat.mutaabid.presentation.viewmodel.WirdViewModel
+import net.rebaat.mutaabid.ui.theme.Gold
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MainScreen(
-    wirdViewModel: WirdViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    wirdViewModel: WirdViewModel = koinViewModel(),
 ) {
     val state = wirdViewModel.state
-    val onAction = wirdViewModel::onAction
+
+    var isEditMode by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        Text(
-            "Just a page",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(0.dp, 8.dp),
-        )
+        Button(
+            modifier = Modifier
+                .padding(20.dp)
+                .align(AbsoluteAlignment.Right),
+            colors = ButtonDefaults.buttonColors(containerColor = Gold),
+            onClick = { isEditMode = !isEditMode }
+        ) {
+            Row(
+                modifier = Modifier.padding(0.dp, 8.dp).height(IntrinsicSize.Max),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(imageVector = Lucide.Plus, "", modifier = Modifier.fillMaxHeight())
+                Text(_t("ManageWirds.text") ?: "ManageWirds")
+            }
+        }
+
+        DayTabs(wirdViewModel)
+
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.weight(1f, fill = true)
+            modifier = Modifier.weight(1f)
         ) {
-            when (state.isLoading) {
-                true -> {
-                    item {
-                        Box(modifier = Modifier.size(100.dp)) {
-                            Text("Loading...")
-                        }
-                    }
-                }
+            itemsIndexed(state.wirdItmams) { index, wirdItmam ->
+                val isVisible = isEditMode || wirdItmam.wird.isAvailable == true
 
-                else -> {
-                    item {
-                        Button(
-                            onClick = {
-                                onAction(
-                                    WirdItmamAction.SelectDate(
-                                        Clock.System.todayIn(
-                                            TimeZone.currentSystemDefault()
-                                        )
-                                    )
-                                )
-                            }
-                        ) {
-                            Text(
-                                Clock.System.todayIn(TimeZone.currentSystemDefault())
-                                    .format(LocalDate.Formats.ISO),
-                                modifier = Modifier.padding(0.dp, 8.dp),
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium,
-                            )
-                        }
-                    }
-                }
-            }
-            items(state.wirdItmams) { wirdItmam ->
-                Button(
-                    onClick = { onAction(WirdItmamAction.ToggleItmamWird(wirdItmam)) },
-                    colors = when (wirdItmam.itmam?.done) {
-                        true -> ButtonColors(
-                            contentColor = lightColorScheme().background,
-                            containerColor = lightColorScheme().primary,
-                            disabledContentColor = Color.Gray,
-                            disabledContainerColor = Color.Gray,
-                        )
-
-                        else -> ButtonColors(
-                            contentColor = lightColorScheme().primary,
-                            containerColor = lightColorScheme().background,
-                            disabledContentColor = Color.Gray,
-                            disabledContainerColor = Color.Gray,
-                        )
-                    }
+                AnimatedVisibility(
+                    visible = isVisible,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically(),
                 ) {
-                    Text(wirdItmam.wird.name)
+                    WirdCard(
+                        wirdItmam,
+                        isLast = index == state.wirdItmams.lastIndex,
+                        isEditMode = isEditMode,
+                        onAction = wirdViewModel::onAction
+                    )
                 }
             }
         }
