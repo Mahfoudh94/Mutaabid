@@ -5,7 +5,9 @@ import net.rebaat.mutaabid.data.repository.WirdRepository
 import net.rebaat.mutaabid.domain.usecase.GetAllWirdsUseCase
 import net.rebaat.mutaabid.domain.usecase.GetWirdItmamsOfDayUseCase
 import net.rebaat.mutaabid.domain.usecase.InsertWirdUseCase
+import net.rebaat.mutaabid.domain.usecase.ToggleWirdVisibilityUseCase
 import net.rebaat.mutaabid.domain.usecase.UpsertItmamUseCase
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 fun provideGetAllWirdsUseCase(wirdRepository: WirdRepository): GetAllWirdsUseCase {
@@ -31,8 +33,9 @@ fun provideToggleWirdVisibilityUseCase(
 }
 
 val domainModule =  module {
-    single { provideGetAllWirdsUseCase(get()) }
-    single { provideInsertWirdUseCase(get()) }
-    single { provideUpsertItmamUseCase(get()) }
-    single { provideWirdItmamOfDayUseCase(get()) }
+    singleOf(::provideGetAllWirdsUseCase)
+    singleOf(::provideInsertWirdUseCase)
+    singleOf(::provideUpsertItmamUseCase)
+    singleOf(::provideWirdItmamOfDayUseCase)
+    singleOf(::provideToggleWirdVisibilityUseCase)
 }

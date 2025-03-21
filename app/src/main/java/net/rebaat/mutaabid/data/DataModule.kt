@@ -8,6 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.rebaat.mutaabid.R
 import net.rebaat.mutaabid.data.dao.ItmamDao
 import net.rebaat.mutaabid.data.dao.WirdDao
 import net.rebaat.mutaabid.data.model.Wird
@@ -15,6 +16,8 @@ import net.rebaat.mutaabid.data.repository.ItmamRepository
 import net.rebaat.mutaabid.data.repository.ItmamRepositoryImpl
 import net.rebaat.mutaabid.data.repository.WirdRepository
 import net.rebaat.mutaabid.data.repository.WirdRepositoryImpl
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import java.util.concurrent.Executors
 
@@ -81,9 +84,9 @@ fun provideItmamRepository(wirdDao: ItmamDao): ItmamRepository {
 }
 
 val dataModule = module {
-    single { provideDatabase(get()) }
-    single { provideWirdDao(get()) }
-    single { provideItmamDao(get()) }
-    factory { provideWirdRepository(get()) }
-    factory { provideItmamRepository(get()) }
+    singleOf(::provideDatabase)
+    singleOf(::provideWirdDao)
+    singleOf(::provideItmamDao)
+    factoryOf(::provideWirdRepository)
+    factoryOf(::provideItmamRepository)
 }
