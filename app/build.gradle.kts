@@ -6,15 +6,15 @@ plugins {
 }
 
 android {
-    namespace = "net.rebaat.mutaabid"
+    namespace = "net.rebbat.mutaabid"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "net.rebaat.mutaabid"
+        applicationId = "net.rebbat.mutaabid"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,6 +26,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
