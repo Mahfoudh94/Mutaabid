@@ -127,6 +127,7 @@ fun _t(text: String) : String? {
         "MonthName.11" to "ذو الحجة",
 
         "ManageWirds.text" to "إدارة الورد",
+        "StarterMessage" to "مرحبا, يمكنك البدء باختيار يوم",
     )
 
     return text_map[text]

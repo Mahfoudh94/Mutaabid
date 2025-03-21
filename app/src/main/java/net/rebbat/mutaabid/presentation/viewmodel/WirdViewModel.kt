@@ -1,12 +1,13 @@
 package net.rebbat.mutaabid.presentation.viewmodel
 
 import android.icu.util.IslamicCalendar
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.rebbat.mutaabid.data.model.Itmam
 import net.rebbat.mutaabid.data.model.Wird
@@ -15,41 +16,27 @@ import net.rebbat.mutaabid.domain.usecase.GetWirdItmamsOfDayUseCase
 import net.rebbat.mutaabid.domain.usecase.ToggleWirdVisibilityUseCase
 import net.rebbat.mutaabid.domain.usecase.UpsertItmamUseCase
 import net.rebbat.mutaabid.presentation.action.WirdItmamAction
-import net.rebbat.mutaabid.presentation.state.WirdState
 
 class WirdViewModel(
     private val getAllWirdOfDayUseCase: GetWirdItmamsOfDayUseCase,
     private val upsertItmamUseCase: UpsertItmamUseCase,
     private val toggleWirdVisibilityUseCase: ToggleWirdVisibilityUseCase,
 ) : ViewModel() {
-    var state by mutableStateOf(WirdState())
-        private set
+    private val _selectedDate = MutableStateFlow(IslamicCalendar())
+    val selectedDate = _selectedDate.asStateFlow()
 
-    init {
-        state = state.copy(isLoading = true)
-        getAllWirdItmams()
-    }
+    val wirdItmams = _selectedDate.flatMapLatest { date ->
+        getAllWirdOfDayUseCase(date)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun onAction(action: WirdItmamAction) {
         when (action) {
             is WirdItmamAction.ToggleItmamWird -> toggleItmam(action.wirdItmam)
             is WirdItmamAction.SelectDate -> selectDate(action.selectedDate)
-            is WirdItmamAction.ToggleWirdVisibility -> toggleWirdVisibility(action.wird, action.visibility)
-        }
-    }
-
-    private fun getAllWirdItmams(selectedDate: IslamicCalendar? = null) {
-        viewModelScope.launch {
-            getAllWirdOfDayUseCase(selectedDate).catch {
-                state = state.copy(
-                    isLoading = false,
-                )
-            }.collect { newWirdItmams ->
-                state = state.copy(
-                    wirdItmams = newWirdItmams,
-                    isLoading = false,
-                )
-            }
+            is WirdItmamAction.ToggleWirdVisibility -> toggleWirdVisibility(
+                action.wird,
+                action.visibility
+            )
         }
     }
 
@@ -57,7 +44,7 @@ class WirdViewModel(
         val itmam = if (wirdItmam.itmam == null)
             Itmam(
                 wirdId = wirdItmam.wird.id,
-                date = state.selectedDate,
+                date = _selectedDate.value,
                 done = true,
             )
         else
@@ -69,12 +56,8 @@ class WirdViewModel(
         }
     }
 
-    private fun selectDate(selectedDate: IslamicCalendar) {
-        state = state.copy(
-            selectedDate = selectedDate,
-//            isLoading = true
-        )
-        getAllWirdItmams(selectedDate)
+    private fun selectDate(date: IslamicCalendar) {
+        _selectedDate.value = date
     }
 
     private fun toggleWirdVisibility(wird: Wird, visible: Boolean?) {

@@ -40,10 +40,9 @@ import net.rebbat.mutaabid.presentation.viewmodel.WirdViewModel
 
 @Composable
 fun DayTabs(
-    wirdViewModel: WirdViewModel,
+    islamicDate: IslamicCalendar,
+    onAction: (WirdItmamAction) -> Unit
 ) {
-    val islamicDate = wirdViewModel.state.selectedDate
-    val onAction = wirdViewModel::onAction
     val lazyListState = rememberLazyListState()
 
     val itemWidth = 48.dp
@@ -93,8 +92,9 @@ fun DayTabs(
                         .clickable(
                             onClick = {
                                 if (islamicDate.DAY == dayNumber) return@clickable;
-                                islamicDate.set(IslamicCalendar.DAY_OF_MONTH, dayNumber)
-                                onAction(WirdItmamAction.SelectDate(islamicDate))
+                                val date = islamicDate.clone() as IslamicCalendar
+                                date.set(IslamicCalendar.DAY_OF_MONTH, dayNumber)
+                                onAction(WirdItmamAction.SelectDate(date))
                             }, enabled = isEnabled
                         ), contentAlignment = Alignment.Center
                 ) {

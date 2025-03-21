@@ -18,8 +18,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +44,8 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     wirdViewModel: WirdViewModel = koinViewModel(),
 ) {
-    val state = wirdViewModel.state
+    val islamicDate by wirdViewModel.selectedDate.collectAsState()
+    val wirdItmams by wirdViewModel.wirdItmams.collectAsState()
 
     var isEditMode by remember { mutableStateOf(false) }
 
@@ -59,7 +62,9 @@ fun MainScreen(
             onClick = { isEditMode = !isEditMode }
         ) {
             Row(
-                modifier = Modifier.padding(0.dp, 8.dp).height(IntrinsicSize.Max),
+                modifier = Modifier
+                    .padding(0.dp, 8.dp)
+                    .height(IntrinsicSize.Max),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(imageVector = Lucide.Plus, "", modifier = Modifier.fillMaxHeight())
@@ -67,14 +72,14 @@ fun MainScreen(
             }
         }
 
-        DayTabs(wirdViewModel)
+        DayTabs(islamicDate, wirdViewModel::onAction)
 
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.weight(1f)
         ) {
-            itemsIndexed(state.wirdItmams) { index, wirdItmam ->
+            itemsIndexed(wirdItmams) { index, wirdItmam ->
                 val isVisible = isEditMode || wirdItmam.wird.isAvailable == true
 
                 AnimatedVisibility(
@@ -84,7 +89,7 @@ fun MainScreen(
                 ) {
                     WirdCard(
                         wirdItmam,
-                        isLast = index == state.wirdItmams.lastIndex,
+                        isLast = index == wirdItmams.lastIndex,
                         isEditMode = isEditMode,
                         onAction = wirdViewModel::onAction
                     )
