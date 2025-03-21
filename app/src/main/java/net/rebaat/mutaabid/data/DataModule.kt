@@ -26,24 +26,42 @@ fun provideDatabase(application: Application): AppDatabase {
         { sqlQuery, bindArgs ->
             Log.d("DB", "SQL Query: $sqlQuery SQL Args: $bindArgs")
         }, executor = Executors.newSingleThreadExecutor()
-        ).addCallback(object : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                GlobalScope.launch {
+    ).addCallback(object : RoomDatabase.Callback() {
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+            GlobalScope.launch {
 
-                    val defaultWirds = listOf(
-                        Wird(name = "Prayer", isAvailable = true),
-                        Wird(name = "Doua", isAvailable = true),
-                        Wird(name = "Quran", isAvailable = true),
-                        Wird(name = "Charity", isAvailable = true),
-                        Wird(name = "Istigfar", isAvailable = true)
-                    )
+                val defaultWirds = listOf(
+                    Wird(name = "QuranRead", isAvailable = true, icon = R.drawable.quran),
+                    Wird(name = "QuranListen", isAvailable = true, icon = R.drawable.quran_hear),
+                    Wird(name = "NiyahRenew", isAvailable = true, icon = R.drawable.niyah),
+                    Wird(name = "Subh", isAvailable = true, icon = R.drawable.prayer),
+                    Wird(name = "AdhkarSabah", isAvailable = true, icon = R.drawable.adhkar),
+                    Wird(name = "Dhuha", isAvailable = true, icon = R.drawable.praying),
+                    Wird(name = "Fasting", isAvailable = true, icon = R.drawable.fasting),
+                    Wird(name = "Sadaka", isAvailable = true, icon = R.drawable.sadaka),
+                    Wird(name = "Kahf", isAvailable = true, icon = R.drawable.kahf),
+                    Wird(name = "PreDuhr", isAvailable = true, icon = R.drawable.praying),
+                    Wird(name = "Duhr", isAvailable = true, icon = R.drawable.prayer),
+                    Wird(name = "PostDuhr", isAvailable = true, icon = R.drawable.praying),
+                    Wird(name = "Asr", isAvailable = true, icon = R.drawable.prayer),
+                    Wird(name = "AdhkarMasa", isAvailable = true, icon = R.drawable.adhkar),
+                    Wird(name = "DuaaMaghrib", isAvailable = true, icon = R.drawable.duaa),
+                    Wird(name = "Maghrib", isAvailable = true, icon = R.drawable.prayer),
+                    Wird(name = "PostMaghrib", isAvailable = true, icon = R.drawable.praying),
+                    Wird(name = "Isha", isAvailable = true, icon = R.drawable.prayer),
+                    Wird(name = "Witr", isAvailable = true, icon = R.drawable.praying),
+                    Wird(name = "Kiyam", isAvailable = true, icon = R.drawable.kiyam),
+                    Wird(name = "AdhkarNaum", isAvailable = true, icon = R.drawable.adhkar),
+                    Wird(name = "TaharaNaum", isAvailable = true, icon = R.drawable.tahara),
+                    Wird(name = "IslamKnowledge", isAvailable = true, icon = R.drawable.islam_knowledge),
+                )
 
-                    provideDatabase(application).getWirdDao().insertAll(wirds = defaultWirds)
+                provideDatabase(application).getWirdDao().insertAll(wirds = defaultWirds)
 
-                }
             }
-        }).build()
+        }
+    }).build()
 }
 
 fun provideWirdDao(database: AppDatabase): WirdDao {
