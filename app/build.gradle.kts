@@ -38,10 +38,18 @@ android {
     buildFeatures {
         compose = true
     }
+    sourceSets {
+        getByName("main") {
+            res {
+                srcDirs("src\\main\\res", "src\\main\\res\\wird_icons")
+            }
+        }
+    }
 }
 
 dependencies {
     implementation(libs.koin.android)
+    implementation(libs.koin.compose)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.kotinx.datetime)
@@ -61,4 +69,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.icons.lucide)
 }
